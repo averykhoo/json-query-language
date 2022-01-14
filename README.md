@@ -74,8 +74,9 @@ pattern = ([..., True, ..., False, ...], [..., False, ..., True, ...])
 
 # todo
 
-* `exact()`
-* `all()` or `and()`
-* `not()` or `none()`
-* maybe `or()` or `xor()` or `one()` or `any()`
-* maybe `fuzzy()` or `approx()` or `truthy()` or `falsy()`
+* do i want special handlers for these?
+  * `exact()`
+  * `all()` or `and()`
+  * `not()` or `none()`
+  * maybe `or()` or `xor()` or `one()` or `any()`
+  * maybe `fuzzy()` or `approx()` or `truthy()` or `falsy()`
