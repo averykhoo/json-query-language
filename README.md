@@ -77,6 +77,8 @@ pattern = ([..., True, ..., False, ...], [..., False, ..., True, ...])
 
 * limit a dict to the keys {1, 2, 3}:
   * `{1: ..., 2: ..., 3: ..., not(...): ...}`
+  * this should work because matching attempts will probably be done in dictionary order, and the `not(...)` is done
+    after the match fails for the whitelisted options
 * limit a dict to the values {1, 2, 3}:
   * `not(...: not((1, 2, 3)))`
 * limit a list to the elems {1, 2, 3} (in any order):
