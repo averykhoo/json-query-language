@@ -1,6 +1,7 @@
 # json-query-language
 
-a powerful query language to match json objects (and someday, maybe to extract data from json objects)
+a ~~powerful~~ non-existent query language to match json objects
+(and maybe someday it can help to extract data from json objects)
 
 ## query language
 
@@ -72,11 +73,21 @@ pattern = ([..., True, ..., False, ...], [..., False, ..., True, ...])
 * match non-empty: use Ellipsis as key and value
 * TODO: exact complete match? maybe an `exact()` class?
 
+### (maybe) `not()` matching
+
+* limit a dict to the keys {1, 2, 3}:
+  * `{1: ..., 2: ..., 3: ..., not(...): ...}`
+* limit a dict to the values {1, 2, 3}:
+  * `not(...: not((1, 2, 3)))`
+* limit a list to the elems {1, 2, 3} (in any order):
+  * `not([..., not((1, 2, 3)), ...])`
+
 # todo
 
 * do i want special handlers for these?
   * `exact()`
   * `all()` or `and()`
-  * `not()` or `none()`
-  * maybe `or()` or `xor()` or `one()` or `any()`
+  * `not()` or `none()` (or allow negation of other classes?)
+  * maybe `or()` or `xor()` or `one()` or `any()` (or `odd()` or `even()`)
   * maybe `fuzzy()` or `approx()` or `truthy()` or `falsy()`
+  * maybe allow lambdas or functions for complex matching? already allowing regex after all
