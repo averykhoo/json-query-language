@@ -86,6 +86,7 @@ pattern = ([..., True, ..., False, ...], [..., False, ..., True, ...])
 
 * do i want special handlers for these?
   * `exact()`
+    * correctly handle NaN, inf, -inf, Ellipsis, tuple, list, dict, and other weird edge cases
   * `all()` or `and()`
   * `not()` or `none()` (or allow negation of other classes?)
   * maybe `or()` or `xor()` or `one()` or `any()` (or `odd()` or `even()`)
