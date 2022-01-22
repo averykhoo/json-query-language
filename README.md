@@ -75,8 +75,10 @@ pattern = ([..., True, ..., False, ...], [..., False, ..., True, ...])
 
 ### (maybe) `not()` matching
 
-* limit a dict to the keys {1, 2, 3}:
-  * `not({not((1, 2, 3)): ...})`
+* ~~limit a dict to the keys {1, 2, 3}:~~
+  * ~~not({not((1, 2, 3)): ...})~~
+  * maybe don't allow matching on keys, because this makes the algorithm O(n*n)
+    as we need to match all pairs of values, and then take the linear assignment sum to see if it's a possible match 
 * limit a dict to the values {1, 2, 3}:
   * `not(...: not((1, 2, 3)))`
 * limit a list to the elems {1, 2, 3} (in any order):
