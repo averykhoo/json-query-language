@@ -29,6 +29,7 @@ a ~~powerful~~ non-existent query language to match json objects
 * `*`
   * use Ellipsis `...` as a catch-all to match anything
   * note that Ellipsis behaves differently in a list!
+  * Ellipsis MUST NOT exist in the object to be matched
 
 ### advanced matching
 
