@@ -33,7 +33,7 @@ def match_jql(jql: dict | list | str | int | float | bool | None | tuple | type(
         # recursively expand tuple of match options
         case (*_, ), _:
             print(f'checking jql options: {jql} -> {json_obj}')
-            return any(match_jql(sub_jql, json_obj) for sub_jql in jql)
+            return any(match_jql(sub_jql, json_obj) for sub_jql in jql)  # todo: handle empty tuple!
 
         # exact match for boolean values
         case bool(_), bool(_):
@@ -77,6 +77,8 @@ def match_jql(jql: dict | list | str | int | float | bool | None | tuple | type(
         # check if jql dict is a subtree of json dict
         case dict(_), dict(_):
             print(f'checking subtree: {jql}, {json_obj}')
+            
+            # todo: fast exist on empty dict!
 
             # fast exit if jql has more keys
             if len(jql) > len(json_obj):
@@ -108,6 +110,8 @@ def match_jql(jql: dict | list | str | int | float | bool | None | tuple | type(
         # jql specifies objects in a list
         case dict(_), list(_):
             print(f'checking list elems: {jql} -> {json_obj}')
+            
+            # todo: fast exit on empty dict!
 
             # fast exit if any keys are invalid
             if any(not isinstance(key, int) for key in jql if key is not Ellipsis):
@@ -137,6 +141,7 @@ def match_jql(jql: dict | list | str | int | float | bool | None | tuple | type(
 
         # list fuzzy match for a list
         case list(_), list(_):
+            # todo:fast exit on empty list!
             print(f'checking list: {jql} -> {json_obj}')
             raise NotImplementedError  # todo
 
