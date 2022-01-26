@@ -21,6 +21,7 @@ def match_jql(jql: dict | list | str | int | float | bool | None | tuple | type(
     # it would be much better to build an internal stack of [(jql, json_obj), ...]
     # because this laziness will exhaust the recursion limit twice as fast
     # todo: don't use recursion
+    # note to self: maybe use a deque and not a stack
     def _match(_jql, _json_obj):
         return match_jql(jql, json_obj, relative_tolerance=relative_tolerance)
 
