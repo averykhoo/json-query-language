@@ -87,6 +87,7 @@ def match_jql(jql: dict | list | str | int | float | bool | None | tuple | type(
                 return False
 
         # check if jql dict is a subtree of json dict
+        # todo: refactor this out into a separate function
         case dict(_), dict(_):
             print(f'checking subtree: {jql}, {json_obj}')
 
@@ -123,6 +124,7 @@ def match_jql(jql: dict | list | str | int | float | bool | None | tuple | type(
             return True
 
         # jql dict specifies objects by index in a list
+        # todo: refactor this out into a separate function
         case dict(_), list(_):
             print(f'checking list elems: {jql} -> {json_obj}')
 
@@ -179,6 +181,7 @@ def match_jql(jql: dict | list | str | int | float | bool | None | tuple | type(
                 return True
 
         # list fuzzy match for a list
+        # todo: refactor this out into a separate function
         case list(_), list(_):
             print(f'checking list fuzzy match: {jql} -> {json_obj}')
 
