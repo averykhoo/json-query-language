@@ -20,8 +20,7 @@ def match_jql(jql: dict | list | str | int | float | bool | None | tuple | type(
     # lazy convenience method to curry in the relative tolerance
     # it would be much better to build an internal stack of [(jql, json_obj), ...]
     # because this laziness will exhaust the recursion limit twice as fast
-    # todo: don't use recursion
-    # note to self: maybe use a deque and not a stack
+    # todo: don't use recursion, use a stack
     def _match(_jql, _json_obj):
         return match_jql(jql, json_obj, relative_tolerance=relative_tolerance)
 
@@ -166,12 +165,84 @@ def match_jql(jql: dict | list | str | int | float | bool | None | tuple | type(
 
         # special case for empty list jql, which can only match an empty list
         case [], list(_):
-            return not json_obj
+            return len(json_obj) == 0
+
+        # simple list matching: every element must match
+        case list(_), list(_) if Ellipsis not in jql:
+            print(f'checking simple list: {jql} -> {json_obj}')
+            if all(elem is not Ellipsis for elem in jql):
+                if len(jql) != len(json_obj):
+                    return False
+                for elem, other_elem in zip(jql, json_obj):
+                    if not _match(elem, other_elem):
+                        return False
+                return True
 
         # list fuzzy match for a list
         case list(_), list(_):
-            print(f'checking list: {jql} -> {json_obj}')
-            raise NotImplementedError  # todo
+            print(f'checking list fuzzy match: {jql} -> {json_obj}')
+
+            # start from the right side and match every non-Ellipsis element
+            query_right_idx = len(jql) - 1
+            object_right_idx = len(json_obj) - 1
+            while jql[query_right_idx] is not Ellipsis:
+                if not _match(jql[query_right_idx], json_obj[object_right_idx]):
+                    return False
+                query_right_idx -= 1
+                object_right_idx -= 1
+
+            # the right query pointer is now at the rightmost Ellipsis
+            # if this is the 0th item in the jql, then that is a successful wildcard match
+            if query_right_idx == 0:
+                return True
+
+            # otherwise, we need to start matching from the left side of the jql
+            query_left_idx = 0
+            object_left_idx = 0
+            while True:
+
+                # if the left and right query pointers meet, it's a successful wildcard match
+                if query_left_idx == query_right_idx:
+                    assert jql[query_left_idx] is Ellipsis
+                    return True
+
+                # if the left query pointer is not an Ellipsis, check if it matches and keep going
+                if jql[query_left_idx] is not Ellipsis:
+                    if not _match(jql[query_left_idx], json_obj[object_left_idx]):
+                        return False
+                    query_left_idx += 1
+                    object_left_idx += 1
+                    continue
+
+                # advance the left query pointer until it is not an Ellipsis
+                # and remember to check if the left and right query pointers meet
+                # but this should only happen if the jql contains multiple Ellipsis-es next to each other
+                # which is not particularly useful, but not an error either, so we'll handle it appropriately
+                while jql[query_left_idx] is Ellipsis:
+                    query_left_idx += 1
+                    if query_left_idx == query_right_idx:
+                        assert jql[query_left_idx] is Ellipsis
+                        return True
+
+                # now we advance the left object pointer until it matches the left query element
+                # and remember to check if the left and right object pointers meet
+                # note that the right object pointer is always at the rightmost unmatched element
+                while object_left_idx <= object_right_idx:
+                    # if there's a successful match, advance the left query pointer and object pointer
+                    # and continue matching the remainder of the jql
+                    if _match(jql[query_left_idx], json_obj[object_left_idx]):
+                        query_left_idx += 1
+                        object_left_idx += 1
+                        break
+                    # otherwise, advance the left object pointer and try again
+                    object_left_idx += 1
+
+                # if there is no matching element, then this match is not possible
+                else:
+                    return False
+
+                # continue matching the remainder of the jql
+                continue
 
         # this should never happen
         case x, y if x == y:
