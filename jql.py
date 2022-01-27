@@ -248,6 +248,7 @@ def match_jql(jql: dict | list | str | int | float | bool | None | tuple | type(
                 continue
 
         # this should never happen
+        # todo: remove or guard this because it will significantly slow down the matching process
         case x, y if x == y:
             print(f'exact: {jql} -> {json_obj}')
             raise RuntimeError(f'unexpected types: {type(jql)}, {type(json_obj)}')
