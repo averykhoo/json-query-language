@@ -33,12 +33,12 @@ def match_jql(jql: dict | list | str | int | float | bool | None | tuple | type(
             return True
 
         # (special case) recursively expand tuple of match options
-        case (*_, ), _:
+        case tuple(_), _:
             print(f'checking jql options: {jql} -> {json_obj}')
             for sub_jql in jql:
                 if _match(sub_jql, json_obj):
                     return True
-            return False
+            return False  # note that an empty tuple will always fail to match
 
         # None matches None
         case None, None:
